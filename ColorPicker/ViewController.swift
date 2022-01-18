@@ -58,7 +58,9 @@ class ViewController: UIViewController {
         let rect_ = CGRect(x: x!, y: y!, width: px!, height: px!)
         let iamgeCroped = cropImage1(image: imageTest!, rect: rect_)
         pickImage.image = iamgeCroped
-        let color = iamgeCroped.averageColor
+        //let color = iamgeCroped.averageColor
+        let color = iamgeCroped.maximumColor
+        let pxlData = iamgeCroped.pixelData()
         pickArea.backgroundColor = color ?? .clear
         RgBresult.text = hexStringFromColor(color: color ?? .darkGray)
         
