@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  ColorPicker
 //
-//  Created by user209951 on 1/17/22.
+//  Created by ichwan on 1/17/22.
 //
 
 import UIKit

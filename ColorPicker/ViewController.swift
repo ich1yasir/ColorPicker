@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  ColorPicker
 //
-//  Created by user209951 on 1/17/22.
+//  Created by ichwan on 1/17/22.
 //
 
 import UIKit
@@ -13,24 +13,24 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageRevieww: UIImageView!
     @IBOutlet weak var poinSelectedX: UITextField!
     @IBOutlet weak var poinSelectedY: UITextField!
-    @IBOutlet weak var ImgH: UILabel!
-    @IBOutlet weak var ImgW: UILabel!
     @IBOutlet weak var pickArea: UIView!
     @IBOutlet weak var RgBresult: UILabel!
     @IBOutlet weak var pickImage: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        view.addGestureRecognizer(tap)
         
         let imageTest:UIImage? = UIImage(named:"testImage")
         imageRevieww.image = imageTest// Do any additional setup after loading the view.
-        let w = Int(imageTest!.size.width)
-        let h = Int(imageTest!.size.height)
-        ImgH.text = h.description
-        ImgW.text = w.description
-        poinSelectedX.text = Int(exactly: (w/2))?.description
-        poinSelectedY.text = Int(exactly: (h/2))?.description
         reloadPicker()
     }
+    @objc func handleTap() {
+        NumOfPixel.resignFirstResponder()
+        poinSelectedX.resignFirstResponder()
+        poinSelectedY.resignFirstResponder() // dismiss keyoard
+    }
+    
     
     @IBAction func onGetColorClick(_ sender: Any) {
         reloadPicker()
@@ -58,9 +58,10 @@ class ViewController: UIViewController {
         let rect_ = CGRect(x: x!, y: y!, width: px!, height: px!)
         let iamgeCroped = cropImage1(image: imageTest!, rect: rect_)
         pickImage.image = iamgeCroped
-        //let color = iamgeCroped.averageColor
-        let color = iamgeCroped.maximumColor
-        let pxlData = iamgeCroped.pixelData()
+        let color = iamgeCroped.averageColor
+        //let color = iamgeCroped.mostFrequence
+        //let color = iamgeCroped.maximumColor
+        //let pxlData = iamgeCroped.pixelData()
         pickArea.backgroundColor = color ?? .clear
         RgBresult.text = hexStringFromColor(color: color ?? .darkGray)
         

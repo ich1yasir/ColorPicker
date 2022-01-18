@@ -2,7 +2,7 @@
 //  UIImageExtension.swift
 //  ColorPicker
 //
-//  Created by user209951 on 1/17/22.
+//  Created by ichwan on 1/17/22.
 //
 
 import Foundation
@@ -43,8 +43,8 @@ extension UIImage {
                        alpha: CGFloat(bitmap[3]) / 255)
     }
     
-    
     /// Average color of the image, nil if it cannot be found
+    /// Its Invalid because maximum rgb is clostest to with
     var maximumColor: UIColor? {
         // convert our image to a Core Image Image
         guard let inputImage = CIImage(image: self) else { return nil }
@@ -78,6 +78,8 @@ extension UIImage {
                        blue: CGFloat(bitmap[2]) / 255,
                        alpha: CGFloat(bitmap[3]) / 255)
     }
+    
+    /// Function to get array of rgb, response is array 1D
     func pixelData() -> [UInt8]? {
             let size = self.size
             let dataSize = size.width * size.height * 4
@@ -96,22 +98,30 @@ extension UIImage {
             return pixelData
     }
     
-    func mostFrequence() -> [UInt8] {
-        guard let pixels = pixelData() else {
-            return  []// or break, or throw, or fatalError, etc.
+    // return single Color with the most frequence color in the box
+    var mostFrequence: UIColor? {
+        guard let pixels = self.pixelData() else {
+            return .clear// return clear image
         }
-        let rgbaArray = stride(from: 0, to: pixels.count, by: 4).map { [pixels[$0], pixels[$0+1], pixels[$0+2], pixels[$0+2]] }
+        // Convert to 2D Array
+        var rgbaArray: [[UInt8]] = []
+        for x in stride(from: 0, to: pixels.count, by: 4) {
+            rgbaArray.append([pixels[x], pixels[x+1], pixels[x+2], pixels[x+3]])
+        }
+        
         // Create dictionary to map value to count
         var counts = [[UInt8]: Int]()
 
         // Count the values with using forEach
-        rgbaArray.forEach { counts[UInt8($0)] = (counts[UInt8($0)] ?? 0) + 1 }
-
-        // Find the most frequent value and its count with max(by:)
-        if let (value, count) = counts.max(by: {$0.1 < $1.1}) {
-            print("\(value) occurs \(count) times")
-        }
-        return []
+        rgbaArray.forEach { counts[[UInt8]($0)] = (counts[[UInt8]($0)] ?? 0) + 1 }
         
+        // Find the most frequent value and its count with max(by:)
+        if let (value_, _) = counts.max(by: {$0.1 < $1.1}) {
+            return UIColor(red: CGFloat(value_[0]) / 255,
+                           green: CGFloat(value_[1]) / 255,
+                           blue: CGFloat(value_[2]) / 255,
+                           alpha: CGFloat(value_[3]) / 255)
+        }
+        return .clear
     }
 }
